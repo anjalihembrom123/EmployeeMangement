@@ -1,10 +1,5 @@
 package com.jocata.employee.vo;
 
-import com.jocata.employee.entity.Organisation;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
 public class EmpRequestResponse {
     private int empid;
     private String empname;

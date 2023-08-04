@@ -1,6 +1,5 @@
 package com.jocata.employee.utils;
 
-import com.jocata.employee.entity.Employee;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
