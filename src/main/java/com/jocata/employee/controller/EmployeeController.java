@@ -218,6 +218,7 @@ public class EmployeeController {
                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")).body(file);
        return body;
     }
+    //To do: Add validations and exception handling properly
     @GetMapping("/downloadBySalary/{salary}")
     public ResponseEntity<Resource> downloadbyId(@PathVariable ("salary") float salary) throws IOException{
         String filname = "salary.xlsx";
