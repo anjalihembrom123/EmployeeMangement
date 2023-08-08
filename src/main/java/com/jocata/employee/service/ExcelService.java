@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 @Service
 public class ExcelService {
@@ -18,7 +20,7 @@ public class ExcelService {
     Repository repository;
     @Autowired
     EmployeeDao employeeDao;
-    public void save(MultipartFile file) {
+    public void save(MultipartFile file){
         try {
             List<Employee> employees = UploadExcelHelper.excelToEmployeelist(file.getInputStream());
             repository.saveAll(employees);

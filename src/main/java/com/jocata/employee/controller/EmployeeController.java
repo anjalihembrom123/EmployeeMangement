@@ -18,8 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.status;
@@ -186,16 +185,16 @@ public class EmployeeController {
     //--------------------------------------------------Upload/download file -----------------------------------------//
 
    @PostMapping("/upload")
-   public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+   public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file)throws IOException {
        String message = "";
 
        if (UploadExcelHelper.hasExcelFormat(file)) {
            try {
-               fileService.save(file);
+                   fileService.save(file);
 
-               message = "Uploaded the file successfully: " + file.getOriginalFilename();
-               return new ResponseEntity<String>(message, HttpStatus.OK);
-           } catch (Exception e) {
+                   message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                   return new ResponseEntity<String>(message, HttpStatus.OK);
+           }catch (Exception e) {
                System.out.println(e.getMessage());
                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
                return new ResponseEntity<String>(message,HttpStatus.EXPECTATION_FAILED);

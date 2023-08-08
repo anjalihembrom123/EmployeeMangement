@@ -2,12 +2,12 @@ package com.jocata.employee.helper;
 
 import com.jocata.employee.entity.Employee;
 import com.jocata.employee.entity.Organisation;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -32,17 +32,17 @@ public class UploadExcelHelper {
         try {
             Workbook workbook  = new XSSFWorkbook(is);
             //fetch Sheet
-            Sheet sheet = workbook.getSheet("Employee_data");
+            Sheet sheet = workbook.getSheet("Sheet1");
             Iterator<Row> rows = sheet.iterator();
 
             List<Employee> employees = new ArrayList<Employee>();
-                //enter row
+            //enter row
             int rowNumber = 0;
             while (rows.hasNext()) {
                 Row currentRow = rows.next();
-
-                // skip header
-                if (rowNumber == 0) {
+                Cell cell = currentRow.getCell(1);
+                // skip header and blank in salary field
+                if (rowNumber == 0 || (cell == null || cell.getCellType() == CellType.BLANK)) {
                     rowNumber++;
                     continue;
                 }
@@ -54,39 +54,49 @@ public class UploadExcelHelper {
 
                 //create index
                 int cellIdx = 0;
-                while (cellsInRow.hasNext()) {
-                    Cell currentCell = cellsInRow.next();
+//
+                    while (cellsInRow.hasNext() ) {
+                        Cell currentCell = cellsInRow.next();
+                        if (!ObjectUtils.isEmpty(currentCell)) {
+                            switch (cellIdx) {
+                                case 0:
+                                    if (currentCell.getStringCellValue() != "") {
+                                        employee.setEmpName(currentCell.getStringCellValue());
+                                        break;
+                                    }
+                                    System.out.println("Employee name is null ");
+                                    break;
 
-                    switch (cellIdx) {
-                        case 0:
-                                employee.setEmpId((int) currentCell.getNumericCellValue());
+                                case 1:
+                                    if ((float) currentCell.getNumericCellValue() == 0) {
+                                        System.out.println("Salary is null");
+                                        break;
+                                    }
+                                    employee.setSalary((float) currentCell.getNumericCellValue());
+                                    break;
+                                case 2:
+                                    if (currentCell.getNumericCellValue() == 0) {
+                                        System.out.println("OrgId is null");
+                                        break;
+                                    }
+                                    organisation.setOrgId((int) currentCell.getNumericCellValue());
+                                    employee.setOrganisation(organisation);
+                                    break;
 
-                            break;
+                                default:
+                                    break;
+                            }
 
-                        case 1:
-                                employee.setEmpName(currentCell.getStringCellValue());
+                            cellIdx++;
+                        }
+                        else {
+                            continue;
+                            }
+                        employees.size();
+                        employees.add(employee);
 
-                            break;
-
-                        case 2:
-                              employee.setSalary((float) currentCell.getNumericCellValue());
-
-                            break;
-                        case 3:
-                            organisation.setOrgId((int)currentCell.getNumericCellValue());
-                            employee.setOrganisation(organisation);
-                            break;
-
-                        default:
-                            break;
                     }
-
-                    cellIdx++;
-                }
-
-                employees.add(employee);
             }
-
             workbook.close();
 
             return employees;

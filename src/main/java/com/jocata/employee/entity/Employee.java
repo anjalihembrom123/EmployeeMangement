@@ -1,11 +1,9 @@
 package com.jocata.employee.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
+import org.hibernate.validator.constraints.NotBlank;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -18,7 +16,7 @@ public class Employee implements Serializable {
     @Column(name = "empname", unique = true)
     @NotBlank
     private String empName;
-    @Column(name = "salary",nullable = false)
+    @Column(name = "salary")
     private Float salary;
 
     @JoinColumn(name = "orgid")
